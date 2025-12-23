@@ -4,17 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Signup | RentTracker</title>
-
 <link rel="stylesheet" href="/style.css">
 </head>
-
 <body class="auth-body">
-
 <div class="auth-container">
     <div class="auth-card">
         <img src="/images/logo.png" class="auth-logo">
         <h2>Create Account</h2>
-        <p class="muted">Start tracking rent today</p>
+        <p class="muted">Start managing rent professionally</p>
 
         <% if(error){ %>
             <div class="error"><%= error %></div>
@@ -22,15 +19,43 @@
 
         <form method="POST" action="/signup">
             <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Sign Up</button>
+            <div class="password-wrap">
+                <input type="password" name="password" id="password" placeholder="Password" required oninput="checkStrength(this.value)">
+                <span class="toggle" onclick="togglePass()">👁️</span>
+            </div>
+            <div class="strength"><div id="bar"></div></div>
+            <small id="strength-text"></small>
+            <button type="submit">Create Account</button>
         </form>
 
         <p class="auth-footer">
-            Already have an account? <a href="/login">Login</a>
+            Already registered? <a href="/login">Login</a>
         </p>
     </div>
 </div>
 
+<script>
+function togglePass(){
+    const p = document.getElementById('password');
+    p.type = p.type === 'password' ? 'text' : 'password';
+}
+
+function checkStrength(val){
+    let score = 0;
+    if(val.length>=8) score++;
+    if(/[A-Z]/.test(val)) score++;
+    if(/[0-9]/.test(val)) score++;
+    if(/[^A-Za-z0-9]/.test(val)) score++;
+
+    const bar = document.getElementById('bar');
+    const text = document.getElementById('strength-text');
+
+    bar.style.width = (score*25)+'%';
+    const labels = ['Weak','Fair','Good','Strong'];
+    const colors = ['#dc2626','#f59e0b','#3b82f6','#16a34a'];
+    bar.style.background = colors[score-1]||'#e5e7eb';
+    text.textContent = labels[score-1]||'';
+}
+</script>
 </body>
 </html>

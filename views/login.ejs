@@ -4,17 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login | RentTracker</title>
-
 <link rel="stylesheet" href="/style.css">
 </head>
-
 <body class="auth-body">
-
 <div class="auth-container">
     <div class="auth-card">
         <img src="/images/logo.png" class="auth-logo">
         <h2>Welcome Back</h2>
-        <p class="muted">Login to your account</p>
+        <p class="muted">Securely access your dashboard</p>
 
         <% if(error){ %>
             <div class="error"><%= error %></div>
@@ -22,7 +19,13 @@
 
         <form method="POST" action="/login">
             <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <div class="password-wrap">
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <span class="toggle" onclick="togglePass()">👁️</span>
+            </div>
+            <label class="remember">
+                <input type="checkbox" name="remember"> Remember me
+            </label>
             <button type="submit">Login</button>
         </form>
 
@@ -32,5 +35,11 @@
     </div>
 </div>
 
+<script>
+function togglePass(){
+    const p = document.getElementById('password');
+    p.type = p.type === 'password' ? 'text' : 'password';
+}
+</script>
 </body>
 </html>
