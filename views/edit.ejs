@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Rent</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<h1>Edit Rent Record</h1>
+
+<form method="POST" action="/edit/<%= record.id %>">
+    <label>Month</label>
+    <input name="month" value="<%= record.month %>" required>
+
+    <label>Amount</label>
+    <input type="number" name="amount" value="<%= record.amount %>" required>
+
+    <label>Date Collected</label>
+    <input type="date" name="date_collected" value="<%= record.date_collected %>" required>
+
+    <label>Notes</label>
+    <input name="notes" value="<%= record.notes %>">
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<a href="/">⬅ Back</a>
+
+</body>
+</html>

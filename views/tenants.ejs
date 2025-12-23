@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Tenants</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header style="background:#0d3b66; padding:20px; color:#fff; display:flex; justify-content:space-between;">
+    <div>Hello, <strong><%= user.username %></strong></div>
+    <a href="/" style="color:#fff;">Dashboard</a>
+</header>
+
+<main style="padding:20px; font-family:'Segoe UI',sans-serif;">
+<h3>Add Tenant</h3>
+<form method="POST" action="/tenants/add" style="display:flex; gap:10px; margin-bottom:20px;">
+<input name="name" placeholder="Tenant Name" required>
+<input name="phone" placeholder="Phone Number">
+<button type="submit">Add Tenant</button>
+</form>
+
+<h3>All Tenants</h3>
+<table style="width:100%; border-collapse:collapse;">
+<tr style="background:#f0f0f0;"><th>Name</th><th>Phone</th><th>Action</th></tr>
+<% tenants.forEach(t => { %>
+<tr style="border-bottom:1px solid #ddd;">
+<td><%= t.name %></td>
+<td><%= t.phone %></td>
+<td>
+<form method="POST" action="/tenants/delete/<%= t.id %>" style="display:inline;">
+<button style="background:#f95738; color:#fff; border:none; padding:4px 8px; border-radius:4px;">Delete</button>
+</form>
+</td>
+</tr>
+<% }) %>
+</table>
+</main>
+</body>
+</html>

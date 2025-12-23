@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RentTracker Dashboard</title>
+
+<link rel="stylesheet" href="/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+    <div class="nav-left">
+        <img src="/images/logo.png" alt="RentTracker Logo" class="logo">
+        <span class="brand">RentTracker</span>
+    </div>
+
+    <div class="nav-right">
+        <span class="welcome">Hello, <strong><%= user.username %></strong></span>
+        <button id="toggle-dark" title="Toggle Dark Mode">🌙</button>
+        <a href="/summary">Summary</a>
+        <a href="/tenants">Tenants</a>
+        <a href="/export">Export</a>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+</nav>
+
+<!-- ===== MAIN CONTAINER ===== -->
+<main class="container">
+
+<!-- ===== DASHBOARD CARDS ===== -->
+<section class="cards">
+    <div class="card">
+        <span class="icon">💰</span>
+        <h3>Total Collected</h3>
+        <p>Ksh <%= Object.values(totals).reduce((a,b)=>a+b,0) %></p>
+    </div>
+
+    <div class="card">
+        <span class="icon">📅</span>
+        <h3>Months</h3>
+        <p><%= Object.keys(totals).length %></p>
+    </div>
+
+    <div class="card">
+        <span class="icon">👥</span>
+        <h3>Tenants</h3>
+        <p><%= tenants.length %></p>
+    </div>
+</section>
+
+<!-- ===== FILTER ===== -->
+<section class="panel">
+<h3>Search / Filter</h3>
+<form method="GET" class="grid-form">
+    <input name="search" placeholder="Tenant name">
+    <input name="month" placeholder="MM/YY">
+    <button type="submit">Filter</button>
+</form>
+</section>
+
+<!-- ===== ADD RENT ===== -->
+<section class="panel">
+<h3>Add Rent</h3>
+<form method="POST" action="/add" class="grid-form">
+    <select name="tenant_id" required>
+        <% tenants.forEach(t => { %>
+            <option value="<%= t.id %>"><%= t.name %></option>
+        <% }) %>
+    </select>
+
+    <input name="month" placeholder="MM/YY" required>
+    <input type="number" name="amount" placeholder="Amount" required>
+    <input type="date" name="date_collected" required>
+    <input name="notes" placeholder="Notes">
+
+    <button type="submit">Save</button>
+</form>
+</section>
+
+<!-- ===== MPESA ===== -->
+<section class="panel">
+<h3>M-PESA Message</h3>
+<form method="POST" action="/parse">
+    <textarea name="message" rows="3" placeholder="Paste M-PESA confirmation..." required></textarea>
+    <button type="submit">Extract & Save</button>
+</form>
+</section>
+
+<!-- ===== RECORDS ===== -->
+<section class="panel">
+<h3>Rent Records</h3>
+
+<table>
+<thead>
+<tr>
+    <th>Tenant</th>
+    <th>Month</th>
+    <th>Amount</th>
+    <th>Date</th>
+    <th>Notes</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+<% records.forEach(r => { %>
+<tr>
+    <td><%= r.tenant_name %></td>
+    <td><%= r.month %></td>
+    <td>Ksh <%= r.amount %></td>
+    <td><%= r.date_collected %></td>
+    <td><%= r.notes || '-' %></td>
+    <td class="actions">
+        <a href="/edit/<%= r.id %>" class="edit">Edit</a>
+        <form method="POST" action="/delete/<%= r.id %>">
+            <button class="delete">Delete</button>
+        </form>
+    </td>
+</tr>
+<% }) %>
+</tbody>
+</table>
+</section>
+
+<!-- ===== CHART ===== -->
+<section class="panel">
+<h3>Monthly Totals</h3>
+<canvas id="chart" height="100"></canvas>
+</section>
+
+</main>
+
+<!-- ===== CHART ===== -->
+<script>
+const totals = JSON.parse('<%- JSON.stringify(totals) %>');
+new Chart(document.getElementById('chart'), {
+    type: 'bar',
+    data: {
+        labels: Object.keys(totals),
+        datasets: [{
+            data: Object.values(totals)
+        }]
+    },
+    options: {
+        plugins: { legend: { display: false } },
+        responsive: true
+    }
+});
+</script>
+
+<!-- ===== DARK MODE ===== -->
+<script>
+const toggle = document.getElementById('toggle-dark');
+toggle.onclick = () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme',
+        document.body.classList.contains('dark') ? 'dark' : 'light'
+    );
+};
+if(localStorage.getItem('theme') === 'dark'){
+    document.body.classList.add('dark');
+}
+</script>
+
+</body>
+</html>

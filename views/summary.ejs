@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Summary</title>
+<link rel="stylesheet" href="/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header style="background:#0d3b66; padding:20px; color:#fff; display:flex; justify-content:space-between;">
+    <div>Hello, <strong><%= user.username %></strong></div>
+    <a href="/" style="color:#fff;">Dashboard</a>
+</header>
+
+<main style="padding:20px; font-family:'Segoe UI',sans-serif;">
+<h2>Monthly Summary</h2>
+
+<h3>Total Rent per Month</h3>
+<canvas id="totalsChart" width="600" height="300"></canvas>
+
+<h3>Total Rent per Tenant</h3>
+<canvas id="tenantChart" width="600" height="300"></canvas>
+
+<script>
+const totals = JSON.parse('<%- JSON.stringify(totals) %>');
+const tenantTotals = JSON.parse('<%- JSON.stringify(tenantTotals) %>');
+
+new Chart(document.getElementById('totalsChart'), {
+    type:'bar',
+    data:{
+        labels: Object.keys(totals),
+        datasets:[{label:'Total Rent', data:Object.values(totals), backgroundColor:'rgba(54,162,235,0.7)'}]
+    },
+    options:{ responsive:true, plugins:{legend:{display:false}} }
+});
+
+new Chart(document.getElementById('tenantChart'), {
+    type:'pie',
+    data:{
+        labels:Object.keys(tenantTotals),
+        datasets:[{label:'Tenant Rent', data:Object.values(tenantTotals), backgroundColor:[
+            '#0d3b66','#f95738','#ff9f1c','#2ec4b6','#e71d36','#011627'
+        ]}]
+    },
+    options:{ responsive:true }
+});
+</script>
+</main>
+</body>
+</html>
